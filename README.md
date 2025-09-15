@@ -1,0 +1,1 @@
+# bmstu_basic_cpp_autumn_2025
