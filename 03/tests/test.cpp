@@ -97,5 +97,3 @@ TEST(Parser, LimitForUint64ToDigit) {
     string_stat.clear();
     digit_stat.clear();
 }
-
-

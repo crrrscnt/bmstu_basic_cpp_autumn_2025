@@ -15,16 +15,26 @@ void parse(const std::string& text,
     };
 
     auto process_token = [&](const std::string& token) {
-        if (check_for_digits(token)) {
-            try {
+        if (check_for_digits(token) && !token.empty()) {
+            bool is_num = true;
+            if (token.length() > 20) is_num = false;
+            else if (token.length() == 20) {
+                const std::string max_uint64 = "18446744073709551615";
+                for (size_t i = 0; i < 20; ++i) {
+                    if (token > max_uint64) {
+                        is_num = false;
+                    }
+                }
+            }
+            if (is_num) {
                 std::uint64_t num = std::stoull(token);
                 if (digit_callback != nullptr) digit_callback(num);
-            } catch (...) {
+                } else {
+                if (string_callback != nullptr) string_callback(token);
+                }
+            } else {
                 if (string_callback != nullptr) string_callback(token);
             }
-        } else {
-            if (string_callback != nullptr) string_callback(token);
-        }
     };
 
     for (char c : text) {
