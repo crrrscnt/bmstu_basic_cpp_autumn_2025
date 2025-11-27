@@ -7,16 +7,21 @@ LDLIBS = -lgtest -lgtest_main -lpthread
 SRC = src
 TESTS = tests
 
-all: hw2
+all: hw2 $(TESTS)
 
 hw2: allocator.o test.o
 	$(CXX) $(CXXFLAGS) -o hw2 allocator.o test.o $(LDFLAGS) $(LDLIBS)
 
 allocator.o: $(SRC)/allocator.cpp $(SRC)/allocator.h
-	$(CXX) $(CXXFLAGS) -c $(SRC)/allocator.cpp
+	$(CXX) $(CXXFLAGS) -c $(SRC)/allocator.cpp -o allocator.o
 
 test.o: $(TESTS)/test.cpp $(SRC)/allocator.h
-	$(CXX) $(CXXFLAGS) -c $(TESTS)/test.cpp
+	$(CXX) $(CXXFLAGS) -c $(TESTS)/test.cpp -o test.o
+
+.PHONY: test clean
 
 clean:
-	del /Q *.o hw2.exe 2>nul
+	del /Q /F hw2 test hw2.exe *.o *.exe
+
+test: hw2
+	.\hw2.exe

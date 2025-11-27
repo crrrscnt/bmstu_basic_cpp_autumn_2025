@@ -36,3 +36,11 @@ TEST(AllocatorTest, Reset) {
 
     clear(alloc3);
 }
+
+TEST(AllocatorTest, InitAllocatorFailure) {
+    Allocator* alloc = init_allocator(static_cast<size_t>(-1));
+    EXPECT_EQ(alloc, nullptr);
+
+    Allocator* alloc2 = init_allocator(0);
+    EXPECT_EQ(alloc2, nullptr);
+}

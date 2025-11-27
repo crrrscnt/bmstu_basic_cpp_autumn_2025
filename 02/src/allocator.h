@@ -3,8 +3,6 @@
 
 #include <cstddef>
 
-inline bool init_alloc = false;
-
 struct Allocator{
     char *start = nullptr; // указатель на начало (выделенной) памяти
     char *end = nullptr; // указатель на конец (выделенной) памяти
