@@ -7,7 +7,7 @@ LDLIBS = -lgtest -lgtest_main -lpthread
 SRC = src
 TESTS = tests
 
-all: hw4 $(TESTS)
+all: hw4
 
 hw4: matrix.o test.o
 	$(CXX) $(CXXFLAGS) -o hw4 matrix.o test.o $(LDFLAGS) $(LDLIBS)
@@ -17,6 +17,9 @@ matrix.o: $(SRC)/matrix.cpp $(SRC)/matrix.hpp
 
 test.o: $(TESTS)/test.cpp $(SRC)/matrix.hpp
 	$(CXX) $(CXXFLAGS) -c $(TESTS)/test.cpp
-
+.PHONY: test
 clean:
-	del /Q /S *.o *.exe
+	del /Q *.o hw4.exe 2>nul
+
+test: hw4
+	.\hw4.exe

@@ -14,6 +14,8 @@ class Matrix {
     public:
         ProxyRow(int32_t *data_, size_t col);
         int32_t& operator[](size_t j);
+        // ProxyRow& operator=(const ProxyRow& other);
+        // ProxyRow(const ProxyRow& other);
     };
 public:
     Matrix(size_t rows_, size_t columns_);
@@ -23,16 +25,16 @@ public:
     size_t getNumRows() const;
     size_t getNumCol() const;
 
-    Matrix& operator=(const Matrix& other);
+    Matrix& operator=(Matrix other);
     Matrix& operator*=(int32_t num);
     Matrix operator+(const Matrix& other);
     bool operator==(const Matrix& other) const;
     bool operator!=(const Matrix& other) const;
-    ProxyRow& operator[](size_t i);
+    ProxyRow operator[](size_t i);
 
     friend std::ostream& operator<<(std::ostream& out, const Matrix& m);
 private:
-    ProxyRow **rows_data_;
+    // ProxyRow **rows_data_;
     int32_t *data_;
     size_t rows_;
     size_t columns_;

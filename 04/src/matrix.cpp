@@ -14,6 +14,22 @@ int32_t& Matrix::ProxyRow::operator[](size_t j)
     return data_[j];
 }
 
+// Matrix::ProxyRow::ProxyRow(const ProxyRow& other)
+//     : data_(new int32_t[other.col_]), col_(other.col_) {
+//         std::copy(other.data_, other.data_ + col_, data_);
+// }
+
+// Matrix::ProxyRow& Matrix::ProxyRow::operator=(const ProxyRow& other) {
+//     if (this != &other)
+//     {
+//         delete[] data_;
+//         col_ = other.col_;
+//         data_ = new int32_t[col_];
+//         std::copy(other.data_, other.data_ + col_, data_);
+//     }
+//     return *this;
+// }
+
 // Matrix
 
 Matrix::Matrix(size_t rows_, size_t columns_)
@@ -23,15 +39,9 @@ Matrix::Matrix(size_t rows_, size_t columns_)
         throw std::invalid_argument("");
     }
     data_ = new int32_t[rows_ * columns_]();
-    rows_data_ = new ProxyRow* [rows_];
-    for (size_t i = 0; i < rows_; ++i)
-    {
-        rows_data_[i] = new ProxyRow(data_ + i * columns_, columns_);
-    }
 }
 
 Matrix::~Matrix() {
-    delete[] rows_data_;
     delete[] data_;
 }
 
@@ -42,38 +52,16 @@ Matrix::Matrix(const Matrix& other)
     {
         data_[i] = other.data_[i];
     }
-
-    rows_data_ = new ProxyRow* [rows_];
-    for (size_t row = 0; row < rows_; ++row) {
-        rows_data_[row] = new ProxyRow(data_ + row * columns_, columns_);
-    }
 }
 
-Matrix& Matrix::operator=(const Matrix& other) {
-    if (this == &other)
+Matrix& Matrix::operator=(Matrix other) {
+    if (this != &other)
     {
-        return *this;
+        Matrix temp(other);
+        std::swap(rows_, temp.rows_);
+        std::swap(columns_, temp.columns_);
+        std::swap(data_, temp.data_);
     }
-
-    delete[] rows_data_;
-    delete[] data_;
-
-    rows_ = other.rows_;
-    columns_ = other.columns_;
-
-    data_ = new int32_t[rows_ * columns_];
-    rows_data_ = new ProxyRow*[rows_];
-
-    for (size_t i = 0; i < rows_ * columns_; ++i)
-    {
-        data_[i] = other.data_[i];
-    }
-
-    for (size_t i = 0; i < rows_; ++i)
-    {
-        rows_data_[i] = new ProxyRow(data_ + i * columns_, columns_);
-    }
-
     return *this;
 }
 
@@ -115,22 +103,14 @@ bool Matrix::operator==(const Matrix& other) const {
 }
 
 bool Matrix::operator!=(const Matrix& other) const {
-    if (rows_ != other.rows_ || columns_ != other.columns_) {
-        return true;
-    }
-    for (size_t i = 0; i < rows_ * columns_; ++i) {
-        if (data_[i] != other.data_[i]) {
-            return true;
-        }
-    }
-    return false;
+    return !(*this == other);
 }
 
-Matrix::ProxyRow& Matrix::operator[](size_t i) {
+Matrix::ProxyRow Matrix::operator[](size_t i) {
     if (i >= rows_) {
         throw std::out_of_range("");
     }
-    return *rows_data_[i];
+    return ProxyRow(data_ + i * columns_, columns_);
 }
 
 std::ostream& operator<<(std::ostream& out, const Matrix& m) {
