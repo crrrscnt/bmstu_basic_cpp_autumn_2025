@@ -14,12 +14,11 @@ private:
     bool negative;
 
     void resize(size_t new_size);
-    void remove_leading_zeros();
-    void copy_from(const BigInt& other);
+    void removeLeadingZeros();
 
-    static BigInt add_absolute(const BigInt& a, const BigInt& b);
-    static BigInt subtract_absolute(const BigInt& a, const BigInt& b);
-    static int compare_absolute(const BigInt& a, const BigInt& b);
+    static BigInt addAbsolute(const BigInt& a, const BigInt& b);
+    static BigInt subtractAbsolute(const BigInt& a, const BigInt& b);
+    static int compareAbsolute(const BigInt& a, const BigInt& b);
 
 public:
     BigInt();
@@ -33,11 +32,8 @@ public:
     BigInt& operator=(const BigInt& other);
     BigInt& operator=(BigInt&& other) noexcept;
     BigInt operator+(const BigInt& other) const;
-    BigInt operator+(int32_t value) const;
     BigInt operator-(const BigInt& other) const;
-    BigInt operator-(int32_t value) const;
     BigInt operator*(const BigInt& other) const;
-    BigInt operator*(int32_t value) const;
     BigInt operator-() const;
 
     bool operator==(const BigInt& other) const;
@@ -48,6 +44,7 @@ public:
     bool operator>=(const BigInt& other) const;
 
     friend std::ostream& operator<<(std::ostream& os, const BigInt& num);
+    friend void swap(BigInt& first, BigInt& second);
 };
 
 #endif // BIGINT_HPP

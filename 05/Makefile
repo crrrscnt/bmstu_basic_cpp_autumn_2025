@@ -9,13 +9,13 @@ TESTS = tests
 
 all: bigint_test
 
-bigint_test: bigint.o test.o
-	$(CXX) $(CXXFLAGS) -o bigint_test bigint.o test.o $(LDFLAGS) $(LDLIBS)
+bigint_test: mybigint.o test.o
+	$(CXX) $(CXXFLAGS) -o bigint_test mybigint.o test.o $(LDFLAGS) $(LDLIBS)
 
-bigint.o: $(SRC)/bigint.cpp $(SRC)/bigint.hpp
-	$(CXX) $(CXXFLAGS) -c $(SRC)/bigint.cpp -o bigint.o
+mybigint.o: $(SRC)/mybigint.cpp $(SRC)/mybigint.hpp
+	$(CXX) $(CXXFLAGS) -c $(SRC)/mybigint.cpp -o mybigint.o
 
-test.o: $(TESTS)/test.cpp $(SRC)/bigint.hpp
+test.o: $(TESTS)/test.cpp $(SRC)/mybigint.hpp
 	$(CXX) $(CXXFLAGS) -c $(TESTS)/test.cpp -o test.o
 
 .PHONY: test clean

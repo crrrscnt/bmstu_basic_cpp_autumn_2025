@@ -1,4 +1,4 @@
-#include "BigInt.hpp"
+#include "mybigint.hpp"
 #include <algorithm>
 #include <cstring>
 
@@ -102,16 +102,7 @@ BigInt& BigInt::operator=(const BigInt& other) {
 }
 
 BigInt& BigInt::operator=(BigInt&& other) noexcept {
-    if (this != &other) {
-        delete[] digits;
-        digits = other.digits;
-        size = other.size;
-        negative = other.negative;
-
-        other.digits = nullptr;
-        other.size = 0;
-        other.negative = false;
-    }
+    swap(*this, other);
     return *this;
 }
 
@@ -125,7 +116,7 @@ void BigInt::resize(size_t new_size) {
     size = new_size;
 }
 
-void BigInt::remove_leading_zeros() {
+void BigInt::removeLeadingZeros() {
     while (size > 1 && digits[size - 1] == 0) {
         size--;
     }
@@ -134,7 +125,7 @@ void BigInt::remove_leading_zeros() {
     }
 }
 
-int BigInt::compare_absolute(const BigInt& a, const BigInt& b) {
+int BigInt::compareAbsolute(const BigInt& a, const BigInt& b) {
     if (a.size != b.size) {
         return (a.size > b.size) ? 1 : -1;
     }
@@ -146,7 +137,7 @@ int BigInt::compare_absolute(const BigInt& a, const BigInt& b) {
     return 0;
 }
 
-BigInt BigInt::add_absolute(const BigInt& a, const BigInt& b) {
+BigInt BigInt::addAbsolute(const BigInt& a, const BigInt& b) {
     BigInt result;
     size_t max_size = std::max(a.size, b.size);
     result.resize(max_size + 1);
@@ -161,11 +152,11 @@ BigInt BigInt::add_absolute(const BigInt& a, const BigInt& b) {
         carry = sum / 10;
     }
 
-    result.remove_leading_zeros();
+    result.removeLeadingZeros();
     return result;
 }
 
-BigInt BigInt::subtract_absolute(const BigInt& a, const BigInt& b) {
+BigInt BigInt::subtractAbsolute(const BigInt& a, const BigInt& b) {
     BigInt result;
     result.resize(a.size);
 
@@ -183,41 +174,33 @@ BigInt BigInt::subtract_absolute(const BigInt& a, const BigInt& b) {
         result.digits[i] = diff;
     }
 
-    result.remove_leading_zeros();
+    result.removeLeadingZeros();
     return result;
 }
 
 BigInt BigInt::operator+(const BigInt& other) const {
     if (negative == other.negative) {
-        BigInt result = add_absolute(*this, other);
+        BigInt result = addAbsolute(*this, other);
         result.negative = negative;
         return result;
     } else {
-        int cmp = compare_absolute(*this, other);
+        int cmp = compareAbsolute(*this, other);
         if (cmp == 0) {
             return BigInt(0);
         } else if (cmp > 0) {
-            BigInt result = subtract_absolute(*this, other);
+            BigInt result = subtractAbsolute(*this, other);
             result.negative = negative;
             return result;
         } else {
-            BigInt result = subtract_absolute(other, *this);
+            BigInt result = subtractAbsolute(other, *this);
             result.negative = other.negative;
             return result;
         }
     }
 }
 
-BigInt BigInt::operator+(int32_t value) const {
-    return *this + BigInt(value);
-}
-
 BigInt BigInt::operator-(const BigInt& other) const {
     return *this + (-other);
-}
-
-BigInt BigInt::operator-(int32_t value) const {
-    return *this - BigInt(value);
 }
 
 BigInt BigInt::operator*(const BigInt& other) const {
@@ -237,12 +220,8 @@ BigInt BigInt::operator*(const BigInt& other) const {
         }
     }
 
-    result.remove_leading_zeros();
+    result.removeLeadingZeros();
     return result;
-}
-
-BigInt BigInt::operator*(int32_t value) const {
-    return *this * BigInt(value);
 }
 
 BigInt BigInt::operator-() const {
@@ -274,7 +253,7 @@ bool BigInt::operator<(const BigInt& other) const {
         return negative;
     }
 
-    int cmp = compare_absolute(*this, other);
+    int cmp = compareAbsolute(*this, other);
     return negative ? (cmp > 0) : (cmp < 0);
 }
 
@@ -299,3 +278,10 @@ std::ostream& operator<<(std::ostream& os, const BigInt& num) {
     }
     return os;
 }
+
+void swap(BigInt& first, BigInt& second){
+    using std::swap;
+    swap(first.digits, second.digits);
+    swap(first.size, second.size);
+    swap(first.negative, second.negative);
+};
